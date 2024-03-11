@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 
+const baseURL =
+  import.meta.env.VITE_ENV == "development"
+    ? "http://localhost:3001"
+    : "https://codertc-backend.onrender.com";
+
 const http = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: baseURL,
   withCredentials: true,
 });
 
