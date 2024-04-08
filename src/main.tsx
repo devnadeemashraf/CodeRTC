@@ -10,7 +10,7 @@ import Providers from "./components/providers/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Providers>
-    {/* {import.meta.env.VITE_ENV !== "development" ? <Analytics /> : null} */}
+    {import.meta.env.VITE_ENV !== "development" ? <Analytics /> : null}
     <App />
   </Providers>
 );
