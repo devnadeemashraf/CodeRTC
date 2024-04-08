@@ -1,9 +1,18 @@
 import { cn } from "@/lib/utils";
 import { ClassNameWithChildrenProps } from "@/types/global";
 
-const MainLayout = ({ children, className }: ClassNameWithChildrenProps) => {
+interface MainLayoutInterface extends ClassNameWithChildrenProps {
+  id?: string;
+}
+
+const MainLayout = ({ children, className, id = "" }: MainLayoutInterface) => {
   return (
-    <section className={cn("w-full h-full", className)}>{children}</section>
+    <section
+      id={id}
+      className={cn("flex min-h-screen h-full w-full flex-col", className)}
+    >
+      {children}
+    </section>
   );
 };
 

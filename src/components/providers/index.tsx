@@ -3,12 +3,13 @@ import { ThemeProvider } from "./themeProvider";
 import { ChildrenProps } from "@/types/global";
 
 import { store } from "@/store";
+import { TooltipProvider } from "../ui/tooltip";
 
 const Providers = ({ children }: ChildrenProps) => {
   return (
     <Provider store={store}>
       <ThemeProvider defaultTheme="dark" storageKey="code-rtc-theme">
-        {children}
+        <TooltipProvider>{children}</TooltipProvider>
       </ThemeProvider>
     </Provider>
   );

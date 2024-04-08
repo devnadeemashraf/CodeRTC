@@ -1,6 +1,6 @@
 import "./index.css";
 
-// Vercel Analytics
+// Vercel Analytics on Production
 import { Analytics } from "@vercel/analytics/react";
 
 import ReactDOM from "react-dom/client";
@@ -10,7 +10,7 @@ import Providers from "./components/providers/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Providers>
-    <Analytics />
+    {/* {import.meta.env.VITE_ENV !== "development" ? <Analytics /> : null} */}
     <App />
   </Providers>
 );

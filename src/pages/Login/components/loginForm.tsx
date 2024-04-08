@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { Loader2 } from "lucide-react";
+
+import { toast } from "sonner";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+
+import { useAppDispatch, useAppSelector } from "@/hooks/useTypedRTK";
+import { loginUserAsyncAction } from "@/store/actions/app/userActions";
 
 import { cn } from "@/lib/utils";
-import { loginUser } from "@/http";
 
-import { useAppDispatch } from "@/hooks/useTypedRTK";
-import { resetAppState, setAuth, setUser } from "@/store/slices/appSlice";
+import {
+  selectAppAuthenticating,
+  selectAppAuthenticated,
+  selectAppError,
+  selectAppSigningInStatus,
+} from "@/store/selectors/app.selector";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -20,53 +26,35 @@ export default function LoginForm({ className, ...props }: UserAuthFormProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { toast } = useToast();
+  const authenticated = useAppSelector(selectAppAuthenticated);
+  const authenticating = useAppSelector(selectAppAuthenticating);
+  const status = useAppSelector(selectAppSigningInStatus);
+  const error = useAppSelector(selectAppError);
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  /**
+   * TODO: Add Form Validation
+   */
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    setIsLoading(true);
-
-    loginUser({
-      username,
-      password,
-    })
-      .then((data) => {
-        console.log("loginForm -> ", data);
-        if (data.status == "ERR") {
-          toast({
-            title: "Login Error",
-            description: data.message,
-          });
-        } else {
-          dispatch(setAuth(true));
-          dispatch(setUser(data.user));
-
-          navigate("/");
-
-          toast({
-            title: "Login Success!",
-            description: "Welcome back!",
-          });
-        }
+    dispatch(
+      loginUserAsyncAction({
+        username,
+        password,
       })
-      .catch((err) => {
-        dispatch(resetAppState());
-
-        console.log("[ERR] loginForm -> ", err);
-        toast({
-          title: "Login Error",
-          description: err.message,
-        });
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    );
   }
+
+  useEffect(() => {
+    if (status == "success" && !authenticating && authenticated) {
+      navigate("/");
+    }
+    if (status == "failed" && !authenticating) {
+      toast("Uh Oh! " + error);
+    }
+  }, [status, authenticating, authenticated]);
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
@@ -84,7 +72,7 @@ export default function LoginForm({ className, ...props }: UserAuthFormProps) {
               type="text"
               autoCapitalize="none"
               autoCorrect="off"
-              disabled={isLoading}
+              disabled={status == "loading"}
             />
 
             <Label className="sr-only" htmlFor="password">
@@ -96,11 +84,13 @@ export default function LoginForm({ className, ...props }: UserAuthFormProps) {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               type="password"
-              disabled={isLoading}
+              disabled={status == "loading"}
             />
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button type="submit" disabled={status == "loading"}>
+            {status == "loading" && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
             Continue
           </Button>
         </div>

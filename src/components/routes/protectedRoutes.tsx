@@ -1,14 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 import { useAppSelector } from "@/hooks/useTypedRTK";
-import { RootState } from "@/store";
+import { selectAppAuthenticated } from "@/store/selectors/app.selector";
 
 const ProtectedRoutes = () => {
-  const authenticated = useAppSelector((state: RootState) => {
-    return state.app.authenticated;
-  });
+  const authenticated = useAppSelector(selectAppAuthenticated);
 
-  return authenticated == true ? <Outlet /> : <Navigate to="/register" />;
+  return authenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default ProtectedRoutes;

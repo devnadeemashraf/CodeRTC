@@ -1,9 +1,9 @@
+import { Link } from "react-router-dom";
+
 import { cn } from "@/lib/utils";
 
-import { buttonVariants } from "@/components/ui/button";
 import RegisterForm from "./components/registerForm";
-
-import { Link } from "react-router-dom";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function RegisterPage() {
   return (
@@ -33,7 +33,7 @@ export default function RegisterPage() {
             >
               <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
             </svg>
-            CodeRTC
+            <span>CodeRTC</span>
           </div>
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">

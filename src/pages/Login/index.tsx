@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-import { buttonVariants } from "@/components/ui/button";
 import LoginForm from "./components/loginForm";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function LoginPage() {
   return (
@@ -37,10 +37,10 @@ export default function LoginPage() {
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">
               <p className="text-lg">
-                &ldquo;Coding is fun, collaborative coding is a lot more fun and
-                this platform does just that!&rdquo;
+                &ldquo;Coding alone is fun but coding with friends is a lot more
+                fun and this platform does just that!&rdquo;
               </p>
-              <footer className="text-sm">John Doe</footer>
+              <footer className="text-sm">SomeRandom Guy</footer>
             </blockquote>
           </div>
         </div>

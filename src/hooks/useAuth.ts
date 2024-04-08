@@ -1,40 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { useAppDispatch } from "./useTypedRTK";
-
-import { getAuthStatus, getUserInfo } from "@/http";
-import { resetAppState, setAuth, setUser } from "@/store/slices/appSlice";
+import { useAppDispatch, useAppSelector } from "./useTypedRTK";
+import { checkAuthUserAsyncAction } from "@/store/actions/app/userActions";
+import { selectAppAuthenticatingStatus } from "@/store/selectors/app.selector";
 
 const useAuth = () => {
-  const [loading, setLoading] = useState(true);
-
   const dispatch = useAppDispatch();
+  const authenticatingStatus = useAppSelector(selectAppAuthenticatingStatus);
 
+  /**
+   * Validate User Session onLoad
+   */
   useEffect(() => {
-    getAuthStatus()
-      .then(async (data) => {
-        if (data) {
-          dispatch(setAuth(true));
-
-          // Get User Info
-          const userInfo = await getUserInfo({
-            userId: data.user.id,
-          });
-
-          const user = await userInfo.user;
-
-          dispatch(setUser(user));
-        } else {
-          dispatch(setAuth(false));
-        }
-      })
-      .catch(() => {
-        dispatch(resetAppState());
-      })
-      .finally(() => setLoading(false));
+    dispatch(checkAuthUserAsyncAction());
   }, []);
 
-  return [loading];
+  return authenticatingStatus == "loading";
 };
 
 export default useAuth;
