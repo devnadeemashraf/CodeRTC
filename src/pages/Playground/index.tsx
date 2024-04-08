@@ -12,6 +12,8 @@ import PasscodeOverlay from "@/components/shared/passcodeOverlay";
 
 import useRoomFunctionalities from "@/hooks/useRoomFunctionalities";
 import useRoomSocket from "@/hooks/useRoomSocket";
+import { selectDeletingRoomStatus } from "@/store/selectors/room/active.selector";
+import { useAppSelector } from "@/hooks/useTypedRTK";
 
 export default function Playground() {
   const {
@@ -29,7 +31,10 @@ export default function Playground() {
     handleOnClickRun,
   } = useRoomFunctionalities();
 
-  const { loading, connectSocket, disconnectSocket } = useRoomSocket();
+  const { loading, connectSocket, disconnectSocket, handleOnClickDeleteRoom } =
+    useRoomSocket();
+
+  const deletingRoomStatus = useAppSelector(selectDeletingRoomStatus);
 
   const [passcodeVerified, setPasscodeVerified] = useState(false);
   const [isChatVisible, setIsChatVisible] = useState(true);
@@ -59,7 +64,12 @@ export default function Playground() {
     return <PasscodeOverlay setPasscodeVerified={setPasscodeVerified} />;
   }
 
-  if (statusGetRoomDetails == "loading" || roomId == "" || loading) {
+  if (
+    statusGetRoomDetails == "loading" ||
+    deletingRoomStatus == "loading" ||
+    roomId == "" ||
+    loading
+  ) {
     return <LoadingOverlay />;
   }
 
@@ -71,6 +81,7 @@ export default function Playground() {
           setIsChatVisible,
           newMessages: 0,
           handleOnClickLeaveRoom: disconnectSocket,
+          handleOnClickDeleteRoom: handleOnClickDeleteRoom,
         }}
       >
         <Aside />

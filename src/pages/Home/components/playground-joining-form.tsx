@@ -83,20 +83,31 @@ const PlaygroundJoiningForm = () => {
         toast("Passcode needs to have 6 digits");
       }
     } else {
-      dispatch(
-        joinRoomAsyncAction({
-          roomId: values.roomId,
-          userId: user?.id as string,
-        })
-      );
+      const isHref = values.roomId.includes("http" || "https");
+      if (!isHref) {
+        dispatch(
+          joinRoomAsyncAction({
+            roomId: values.roomId,
+            userId: user?.id as string,
+          })
+        );
+      } else {
+        const roomId = values.roomId.trim().split("/")[4];
+        dispatch(
+          joinRoomAsyncAction({
+            roomId,
+            userId: user?.id as string,
+          })
+        );
+      }
     }
   }
 
-  useEffect(() => {
-    if (status == "failed" && error) {
-      toast(error as string);
-    }
-  }, [status, error]);
+  // useEffect(() => {
+  //   if (status == "failed" && error) {
+  //     toast(error as string);
+  //   }
+  // }, [status, error]);
 
   useEffect(() => {
     if (status == "success" && redirect == true && activeRoom) {
@@ -113,16 +124,10 @@ const PlaygroundJoiningForm = () => {
           name="roomId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Playground ID</FormLabel>
+              <FormLabel>Playground ID or Link</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="ex: ae01ds-23rfg4-56chsj7-8asnash"
-                  {...field}
-                />
+                <Input placeholder="Paste room id or link here" {...field} />
               </FormControl>
-              <FormDescription>
-                ID of the Playground that you want to join
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

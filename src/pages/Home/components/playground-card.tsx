@@ -1,4 +1,4 @@
-import { Lock, Trash2 } from "lucide-react";
+import { Lock } from "lucide-react";
 
 import { toast } from "sonner";
 
@@ -23,6 +23,7 @@ const PlaygroundCard = ({ room }: PlaygroundCardProps) => {
     e: React.MouseEvent<HTMLSpanElement, MouseEvent>
   ) => {
     e.stopPropagation();
+    toast(`Deleting: ${room.id}`);
   };
 
   const handleOnClickCopyRoomId = (
@@ -48,11 +49,6 @@ const PlaygroundCard = ({ room }: PlaygroundCardProps) => {
         <div className="flex items-center justify-center gap-4">
           {room.isProtected && (
             <Lock size={14} className="text-muted-foreground" />
-          )}
-          {room.ownerId == user?.id && (
-            <span onClick={handleOnClickDeleteRoom}>
-              <Trash2 size={14} className="text-muted-foreground" />
-            </span>
           )}
         </div>
       </CardHeader>

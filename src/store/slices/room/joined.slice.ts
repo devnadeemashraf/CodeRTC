@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 import {
   joinRoomAsyncAction,
   verifyPasscodeAndJoinRoomAsyncAction,
 } from "@/store/actions/rooms/joinAsync.action";
 
-import { IAsyncThunkError, IAsyncThunkStatus } from "@/types/thunk";
+import { IAsyncThunkError, IAsyncThunkStatus, TStatus } from "@/types/thunk";
 
 interface IJoinedRoomInitialState extends IAsyncThunkStatus, IAsyncThunkError {
   rooms: IRoom[];
@@ -28,6 +28,9 @@ const joinedRoomsSlice = createSlice({
     SET_JOINED_ROOMS: (currentState, action) => {
       currentState.rooms = action.payload;
     },
+    SET_STATUS: (currentState, action: PayloadAction<TStatus>) => {
+      currentState.status = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -35,13 +38,15 @@ const joinedRoomsSlice = createSlice({
         state.status = "loading";
       })
       .addCase(joinRoomAsyncAction.fulfilled, (state, action) => {
-        if (action.payload.requiresPasscode) {
-          state.redirect = false;
-          state.protected = true;
-        } else {
-          state.redirect = true;
-          state.protected = false;
-          state.rooms.push(action.payload);
+        if (action.payload !== null) {
+          if (action.payload.requiresPasscode) {
+            state.redirect = false;
+            state.protected = true;
+          } else {
+            state.redirect = true;
+            state.protected = false;
+            state.rooms.push(action.payload);
+          }
         }
 
         state.status = "success";
@@ -82,5 +87,5 @@ const joinedRoomsSlice = createSlice({
   },
 });
 
-export const { SET_JOINED_ROOMS } = joinedRoomsSlice.actions;
+export const { SET_JOINED_ROOMS, SET_STATUS } = joinedRoomsSlice.actions;
 export default joinedRoomsSlice.reducer;

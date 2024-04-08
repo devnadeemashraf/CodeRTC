@@ -26,7 +26,7 @@ export const checkAuthStatus = async () => {
   } catch (error: any) {
     const axiosResponse = error.response;
     console.log(`[checkAuthStatus()] Error: `, axiosResponse);
-    return null;
+    return axiosResponse;
   }
 };
 
@@ -302,6 +302,24 @@ export const saveRoomCodeContent = async (
     const axiosResponse = error.response;
 
     console.log(`[saveRoomCodeContent()] Error: `, axiosResponse);
+    return axiosResponse.data;
+  }
+};
+
+export const deleteRoom = async (roomId: string) => {
+  try {
+    const fetchRequest = await http.post(`/room/delete`, {
+      roomId,
+    });
+    const axiosResponse = await fetchRequest.data;
+
+    console.log(`[deleteRoom()] Result: `, axiosResponse);
+
+    return await axiosResponse;
+  } catch (error: any) {
+    const axiosResponse = error.response;
+
+    console.log(`[deleteRoom()] Error: `, axiosResponse);
     return axiosResponse.data;
   }
 };

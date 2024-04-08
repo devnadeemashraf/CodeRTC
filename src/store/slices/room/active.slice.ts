@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 import saveCodeContentReducer from "@/store/reducers/room/saveCodeContent.reducer";
 import getRoomInfoReducer from "@/store/reducers/room/getRoomInfo.reducer";
+import deleteRoomReducer from "@/store/reducers/room/deleteRoom.reducer";
 
 import { IActiveRoomInitialState } from "@/types/redux/slices/rooms";
 
@@ -10,8 +11,12 @@ const initialState: IActiveRoomInitialState = {
   protected: true,
   verified: false,
 
+  performCacheCleanup: false,
+
   fetchingRoomInfoStatus: "idle",
   savingCodeContentStatus: "idle",
+  deletingRoomStatus: "idle",
+
   error: undefined,
 
   members: [],
@@ -53,6 +58,7 @@ const activeRoomSlice = createSlice({
   extraReducers(builder) {
     getRoomInfoReducer(builder);
     saveCodeContentReducer(builder);
+    deleteRoomReducer(builder);
   },
 });
 

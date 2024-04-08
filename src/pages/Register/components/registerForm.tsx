@@ -48,10 +48,6 @@ export default function RegisterForm({
   }
 
   useEffect(() => {
-    if (status == "failed") {
-      toast("Uh Oh! " + error);
-    }
-
     if (status == "success") {
       navigate("/");
     }

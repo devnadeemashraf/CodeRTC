@@ -7,6 +7,8 @@ import {
 } from "@/store/slices/room/active.slice";
 import { ROOMS_CACHE_KEYS } from "@/constants/localStorageKeys";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { toast } from "sonner";
+import { SET_STATUS } from "@/store/slices/room/joined.slice";
 
 type TJoinRoomAsyncActionParams = {
   roomId: string;
@@ -24,31 +26,42 @@ export const joinRoomAsyncAction = createAsyncThunk(
   async ({ roomId, userId }: TJoinRoomAsyncActionParams, thunkAPI) => {
     const { getItems, setItems } = useLocalStorage();
 
-    const response = await attemptJoinRoom({
-      roomId,
-      userId,
-    });
-    if (response.status === "SUCCESS") {
-      if (!response.data.requiresPasscode) {
-        // Update Cache
-        const cachedJoinedRooms = getItems(ROOMS_CACHE_KEYS.JOINED_ROOMS);
-        cachedJoinedRooms.push(response.data);
+    // Update Cache
+    const cachedJoinedRooms = getItems(ROOMS_CACHE_KEYS.JOINED_ROOMS);
+    const hasJoined = cachedJoinedRooms.filter(
+      (room: IRoom) => room.id === roomId
+    );
 
-        setItems(ROOMS_CACHE_KEYS.CREATED_ROOMS, cachedJoinedRooms);
+    if (hasJoined.length <= 0) {
+      const response = await attemptJoinRoom({
+        roomId,
+        userId,
+      });
+      if (response.status === "SUCCESS") {
+        if (!response.data.requiresPasscode) {
+          cachedJoinedRooms.push(response.data);
+          setItems(ROOMS_CACHE_KEYS.JOINED_ROOMS, cachedJoinedRooms);
 
-        thunkAPI.dispatch(
-          SET_ACTIVE_ROOM({
-            room: response.data,
-            protected: response.data.isProtected,
-            verified: true,
-          })
-        );
+          thunkAPI.dispatch(
+            SET_ACTIVE_ROOM({
+              room: response.data,
+              protected: response.data.isProtected,
+              verified: true,
+            })
+          );
+        }
+
+        return response.data;
+      } else {
+        toast(`Uh Oh! ${response.message}`);
+        thunkAPI.dispatch(RESET_ACTIVE_ROOM());
+        throw new Error(response.message);
       }
-
-      return response.data;
     } else {
+      toast(`You are already a member of this room!`);
       thunkAPI.dispatch(RESET_ACTIVE_ROOM());
-      throw new Error(response.message);
+      thunkAPI.dispatch(SET_STATUS("success"));
+      return null;
     }
   }
 );
@@ -71,7 +84,7 @@ export const verifyPasscodeAndJoinRoomAsyncAction = createAsyncThunk(
       const cachedJoinedRooms = getItems(ROOMS_CACHE_KEYS.JOINED_ROOMS);
       cachedJoinedRooms.push(response.data);
 
-      setItems(ROOMS_CACHE_KEYS.CREATED_ROOMS, cachedJoinedRooms);
+      setItems(ROOMS_CACHE_KEYS.JOINED_ROOMS, cachedJoinedRooms);
 
       thunkAPI.dispatch(
         SET_ACTIVE_ROOM({
@@ -83,6 +96,7 @@ export const verifyPasscodeAndJoinRoomAsyncAction = createAsyncThunk(
 
       return response.data;
     } else {
+      toast(`Uh Oh! ${response.message}`);
       thunkAPI.dispatch(RESET_ACTIVE_ROOM());
       throw new Error(response.message);
     }

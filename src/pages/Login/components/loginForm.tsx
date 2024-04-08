@@ -51,9 +51,6 @@ export default function LoginForm({ className, ...props }: UserAuthFormProps) {
     if (status == "success" && !authenticating && authenticated) {
       navigate("/");
     }
-    if (status == "failed" && !authenticating) {
-      toast("Uh Oh! " + error);
-    }
   }, [status, authenticating, authenticated]);
 
   return (

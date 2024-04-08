@@ -1,5 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { toast } from "sonner";
+
 import {
   checkAuthStatus,
   loginUser,
@@ -58,6 +60,7 @@ export const loginUserAsyncAction = createAsyncThunk(
     if (response.status === "SUCCESS") {
       return response.data;
     } else {
+      toast(`Uh Oh! ${response.message}`);
       throw new Error(response.message);
     }
   }
@@ -85,6 +88,7 @@ export const registerUserAsyncAction = createAsyncThunk(
     if (response.status === "SUCCESS") {
       return response.data;
     } else {
+      toast("Uh Oh! " + response.message);
       throw new Error(response.message);
     }
   }
@@ -109,6 +113,7 @@ export const checkAuthUserAsyncAction = createAsyncThunk(
     if (response.status == "SUCCESS") {
       return response.data;
     } else {
+      toast(`${response.data}`);
       throw new Error(response.data.message);
     }
   }

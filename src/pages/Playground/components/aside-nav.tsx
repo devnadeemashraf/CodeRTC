@@ -20,6 +20,17 @@ import { selectAppUser } from "@/store/selectors/app.selector";
 import { selectActiveRoom } from "@/store/selectors/room/active.selector";
 
 import { useAppSelector } from "@/hooks/useTypedRTK";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const AsideNav = () => {
   const user = useAppSelector(selectAppUser);
@@ -30,6 +41,7 @@ const AsideNav = () => {
     setIsChatVisible,
     newMessages,
     handleOnClickLeaveRoom,
+    handleOnClickDeleteRoom,
   } = useContext(LiveChatContext);
 
   return (
@@ -52,7 +64,26 @@ const AsideNav = () => {
           tooltip="Leave Room"
         />
         {user?.id == activeRoom?.ownerId ? (
-          <AsideNavItem bubbleValue={0} icon={Trash} tooltip="Close Room" />
+          <AlertDialog>
+            <AlertDialogTrigger onClick={(e) => e.stopPropagation()}>
+              <AsideNavItem bubbleValue={0} icon={Trash} tooltip="Close Room" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this room and remove the data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>No, not right now</AlertDialogCancel>
+                <AlertDialogAction onClick={handleOnClickDeleteRoom}>
+                  Yes, delete this room
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         ) : null}
       </nav>
     </>
