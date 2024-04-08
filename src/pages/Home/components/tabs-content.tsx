@@ -15,8 +15,6 @@ import PlaygroundCard from "./playground-card";
 
 import withNavigateOnClick from "@/hoc/withNavigateOnClick";
 
-import { useAppDispatch } from "@/hooks/useTypedRTK";
-
 interface TabsContentProps {
   loading: boolean;
   value: string;
@@ -32,8 +30,6 @@ const TabsContent = ({
   description,
   rooms,
 }: TabsContentProps) => {
-  const dispatch = useAppDispatch();
-
   const [tabContentRooms, setTabContentRooms] = useState<IRoom[]>(rooms);
 
   useEffect(() => {

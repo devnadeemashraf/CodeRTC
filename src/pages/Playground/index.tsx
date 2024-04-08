@@ -13,8 +13,6 @@ import PasscodeOverlay from "@/components/shared/passcodeOverlay";
 import useRoomFunctionalities from "@/hooks/useRoomFunctionalities";
 import useRoomSocket from "@/hooks/useRoomSocket";
 
-import { useAppDispatch } from "@/hooks/useTypedRTK";
-
 export default function Playground() {
   const {
     roomId,
@@ -30,8 +28,6 @@ export default function Playground() {
     handleOnClickSave,
     handleOnClickRun,
   } = useRoomFunctionalities();
-
-  const dispatch = useAppDispatch();
 
   const { loading, connectSocket, disconnectSocket } = useRoomSocket();
 

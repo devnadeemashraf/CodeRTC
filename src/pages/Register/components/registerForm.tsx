@@ -31,7 +31,7 @@ export default function RegisterForm({
   const error = useAppSelector(selectAppError);
 
   const [name, setName] = useState<string>("");
-  const [profileImage, setProfileImage] = useState<string>("");
+  const [profileImage] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
